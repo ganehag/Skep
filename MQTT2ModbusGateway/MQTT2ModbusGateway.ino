@@ -9,7 +9,7 @@
 
 #include "MessageParser.h"
 
-#define MB_BASE_ADDR 100
+#define MB_BASE_ADDR 0x00
 
 static void callback(char* topic, byte* payload, unsigned int length);
 
@@ -173,6 +173,6 @@ void loop() {
     Alarm.delay(1000);
   }
 
-  Alarm.delay(10);
+  Alarm.delay(1);
 }
 
