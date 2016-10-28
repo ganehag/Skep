@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Modbus.h>
-#include <ModbusIP.h>
+#include <ModbusIP2.h>
 
 #include <JsonListener.h>
 
@@ -18,13 +18,13 @@
 #define htonw(x) ( ((x)<<16) | (((x)>>16)&0xFFFF) )
 
 enum KeyType { NONE, ADDR, TYPE, VALUE };
-
+enum ObjectType { NOOBJ, COIL, DISCRETE, IREG, HREG };
 enum MType { UNDEF, BOOL, INT16, INT32, FLOAT };
+
 struct Mreg {
   MType s_type;
   String temp_value;
-  union
-  {
+  union {
     uint16_t s_shorts[2];
     uint32_t s_int;
     float s_float;
@@ -32,7 +32,8 @@ struct Mreg {
 };
 
 struct Message {
-  int addr;
+  int32_t addr;
+  ObjectType object;
   struct Mreg data;
 };
 

@@ -28,9 +28,24 @@ void MessageParser::key(String key) {
 }
 
 void MessageParser::value(String value) {
+  int32_t addr;
+
   switch(kt) {
     case ADDR:
-      msg.addr = value.toInt();
+      addr = value.toInt();
+      if(value.startsWith("0") && addr > 0 && addr <= 65536) {
+        msg.object = COIL;
+      } else if(value.startsWith("1") && addr > 100000 && addr <= 165536) {
+        msg.object = DISCRETE;
+        addr -= 100001;
+      } else if(value.startsWith("3") && addr > 300000 && addr <= 365536) {
+        msg.object = IREG;
+        addr -= 300001;
+      } else if(value.startsWith("4") && addr > 400000 && addr <= 465536) {
+        msg.object = HREG;
+        addr -= 400001;
+      }
+      msg.addr = addr;
     break;
     case TYPE:
       if(value == "bool") {
@@ -77,22 +92,48 @@ void MessageParser::endObject() {
       } else {
         msg.data.s_int = msg.data.temp_value.toInt();
       }
-      mb.Ists(msg.addr, msg.data.s_int);
+      if(msg.object == NOOBJ) {
+        msg.object = DISCRETE;
+      }
     break;
     case INT16:
       msg.data.s_int = msg.data.temp_value.toInt();
-      mb.Ireg(msg.addr, msg.data.s_int);
     break;
     case INT32:
       msg.data.s_int = htonw(msg.data.temp_value.toInt());
-      mb.Ireg(msg.addr, msg.data.s_shorts[0]);
-      mb.Ireg(msg.addr + 1, msg.data.s_shorts[1]);
     break;
     case FLOAT:
       msg.data.s_float = msg.data.temp_value.toFloat();
       msg.data.s_int = htonw(msg.data.s_int);
-      mb.Ireg(msg.addr, msg.data.s_shorts[0]);
-      mb.Ireg(msg.addr + 1, msg.data.s_shorts[1]);
+    break;
+  }
+
+  if(msg.object == NOOBJ) {
+    msg.object = IREG;
+  }
+
+  switch(msg.object) {
+    case COIL:
+      mb.Coil(msg.addr, msg.data.s_int);
+    break;
+    case DISCRETE:
+      mb.Ists(msg.addr, msg.data.s_int);
+    break;
+    case IREG:
+      if(msg.data.s_type == BOOL || msg.data.s_type == INT16) {
+        mb.Ireg(msg.addr, msg.data.s_int);
+      } else {
+        mb.Ireg(msg.addr, msg.data.s_shorts[0]);
+        mb.Ireg(msg.addr + 1, msg.data.s_shorts[1]);
+      }
+    break;
+    case HREG:
+      if(msg.data.s_type == BOOL || msg.data.s_type == INT16) {
+        mb.Hreg(msg.addr, msg.data.s_int);
+      } else {
+        mb.Hreg(msg.addr, msg.data.s_shorts[0]);
+        mb.Hreg(msg.addr + 1, msg.data.s_shorts[1]);
+      }
     break;
   }
 
@@ -110,6 +151,7 @@ void MessageParser::startArray() {
 
 void MessageParser::startObject() {
   msg.addr = -1;
+  msg.object = NOOBJ;
   msg.data.s_type = UNDEF;
   msg.data.temp_value = String("");
   msg.data.s_int = 0;
