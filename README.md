@@ -1,4 +1,7 @@
-# Arduino MQTT to Modbus (slave)
+# Skep: MQTT to Modbus on Arduino
+
+*Skep* a beehive made from wicker plastered with mud and dung.
+
 Uses <a href="https://mqtt.org/" target=_blank>MQTT</a> to read and write values in an internal <a href="https://en.wikipedia.org/wiki/Modbus">Modbus</a> slave.
 
 ## Hardware requirements
