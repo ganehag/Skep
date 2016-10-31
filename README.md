@@ -1,4 +1,4 @@
-# MQTT to Modbus Gateway
+# Arduino MQTT to Modbus (slave)
 Uses <a href="https://mqtt.org/" target=_blank>MQTT</a> to read and write values in an internal <a href="https://en.wikipedia.org/wiki/Modbus">Modbus</a> slave.
 
 ## Hardware requirements
