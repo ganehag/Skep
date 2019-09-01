@@ -224,7 +224,7 @@ static void applySetting(String name, String value) {
       str_p++;
     }
 
-    while((ret = sscanf(str_p, "%[^-]-%[^,],%s", &val1, &val2, &sval)) != EOF) {
+    while((ret = sscanf(str_p, "%[^-]-%[^,],%s", &val1, &val2, &sval)) == 3) {
       struct PubRegs *pr = &pubregs[pubr];
 
       // Serial.println(String(val1) + " " + String(val2) + " " + String(sval));
