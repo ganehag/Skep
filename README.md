@@ -114,3 +114,18 @@ If the declaration specified `float` the values at those memory addresses will b
       ]
     }
 ```
+
+## pyModbus write example
+
+```python
+from pymodbus.constants import Endian
+from pymodbus.payload import BinaryPayloadDecoder
+from pymodbus.payload import BinaryPayloadBuilder
+from pymodbus.client.sync import ModbusTcpClient as ModbusClient
+
+client = ModbusClient('10.0.0.80')
+builder = BinaryPayloadBuilder(byteorder=Endian.Big)
+builder.add_32bit_float(22.34)
+payload = builder.build()
+client.write_registers(0, payload, skip_encode=True, unit=1)
+```
