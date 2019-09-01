@@ -54,6 +54,26 @@ This is the settings format `[key=value]` and the following keys are allowed:
     + 400005-400005,int16
     + 400006-400007,int32
 
+### Example of a settings.txt file (root of uSD card)
+
+```txt
+[mac=AA:BB:CC:DD:EE:FF]
+[ip=10.0.0.100]
+[netmask=255.255.0.0]
+[gw=10.0.0.1]
+[mqtt_gw=10.0.0.25]
+[coils=10]
+[discretes=10]
+[ireg=10]
+[hreg=10]
+[intopic=modbus-mqtt/input]
+[outtopic=modbus-mqtt/output]
+[pub_interval=60]
+[publish=
+000001-000010,bool
+400001-400002,float]
+```
+
 ## Data encoding and memory explaination
 - coil numbers span from 000001 to 065536
 - discrete input numbers span from 100001 to 165536
